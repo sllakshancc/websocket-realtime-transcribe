@@ -10,6 +10,17 @@ function App() {
   const [transcript, setTranscript] = useState("");
   const [botReply, setBotReply] = useState("");
 
+  useEffect(() => {
+    socket.on("transcript", ({ text, isFinal }) => {
+      setTranscript((prev) => (isFinal ? prev + text + " " : prev));
+    });
+
+    socket.on("bot-response", ({ text, audioData }) => {
+      setBotReply(text);
+      const audio = new Audio("data:audio/mp3;base64," + audioData);
+      audio.play();
+    });
+  }, []);
 
 
 
