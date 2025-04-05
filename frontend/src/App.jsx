@@ -7,8 +7,12 @@ window.Buffer = Buffer;
 const socket = io("http://localhost:3001");
 
 function App() {
+  const [recording, setRecording] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [botReply, setBotReply] = useState("");
+  const audioContextRef = useRef(null);
+  const mediaStreamRef = useRef(null);
+  const processorRef = useRef(null);
 
   useEffect(() => {
     socket.on("transcript", ({ text, isFinal }) => {
