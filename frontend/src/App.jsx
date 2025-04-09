@@ -52,6 +52,13 @@ function App() {
     setRecording(true);
   };
 
+  const stopRecording = () => {
+    socket.emit("stop-recording");
+    processorRef.current?.disconnect();
+    mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
+    audioContextRef.current?.close();
+    setRecording(false);
+  };
 
   return (
     <div className="p-4 space-y-4 max-w-xl mx-auto">
