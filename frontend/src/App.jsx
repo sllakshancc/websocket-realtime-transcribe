@@ -63,6 +63,12 @@ function App() {
   return (
     <div className="p-4 space-y-4 max-w-xl mx-auto">
       <h1 className="text-2xl font-bold">🎙️ AI Voice Chat</h1>
+      <button
+        className={`px-4 py-2 rounded text-white ${recording ? "bg-red-500" : "bg-green-500"}`}
+        onClick={recording ? stopRecording : startRecording}
+      >
+        {recording ? "Stop Recording" : "Push to Talk"}
+      </button>
       <div>
         <h2 className="font-semibold">🗣️ Transcript</h2>
         <p>{transcript}</p>
