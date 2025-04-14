@@ -22,6 +22,33 @@ io.on("connection", (socket) => {
   let recognizeStream = null;
   let finalTranscript = "";
 
+  socket.on("start-recording", (config) => {
+    recognizeStream = speechClient
+      .streamingRecognize({
+        config: {
+          encoding: "LINEAR16",
+          sampleRateHertz: 44100,
+          languageCode: "en-US",
+        },
+        interimResults: true,
+      })
+      .on("error", (error) => {
+        console.error("STT Error:", error);
+      })
+      .on("data", (data) => {
+        const text = data.results[0]?.alternatives[0]?.transcript || "";
+        console.log("STT text:" + text);
+        const isFinal = data.results[0]?.isFinal;
+        if (isFinal) finalTranscript += text + " ";
+        socket.emit("transcript", { text, isFinal });
+      })
+      .on("end", () => {
+        console.log("STT stream ended."); // Add this log
+      })
+      .on("close", () => {
+        console.log("STT stream closed."); // Add this log
+      });
+  });
 
   socket.on("audio-chunk", (chunk) => {
     if (recognizeStream) {
