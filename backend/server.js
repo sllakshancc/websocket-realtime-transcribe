@@ -17,6 +17,19 @@ const io = socketIo(server, {
   }
 });
 
+io.on("connection", (socket) => {
+  console.log("✅ User connected");
+  let recognizeStream = null;
+  let finalTranscript = "";
+
+
+  socket.on("audio-chunk", (chunk) => {
+    if (recognizeStream) {
+      const buffer = Buffer.from(chunk, "base64");
+      console.log("Received audio chunk size:", buffer.length);
+      recognizeStream.write(buffer);
+    }
+  });
 
 
 });
