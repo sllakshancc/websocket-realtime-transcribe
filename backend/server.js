@@ -57,6 +57,10 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("disconnect", () => {
+    console.log("🔌 User disconnected");
+    if (recognizeStream) recognizeStream.end();
+  });
 });
 
 const PORT = 3001;
