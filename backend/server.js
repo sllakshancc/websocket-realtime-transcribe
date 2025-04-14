@@ -31,6 +31,31 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("stop-recording", async () => {
+    if (recognizeStream) recognizeStream.end();
+    recognizeStream = null;
+
+    try {
+      // const aiResponse = await axios.post("https://your-ai-endpoint.com/chat", {
+      //   prompt: finalTranscript.trim(),
+      // });
+      // const aiText = aiResponse.data.text || "Sorry, I didn't understand that.";
+
+      const aiText = "This is a mock response from chatbot.";
+
+      const [ttsResponse] = await ttsClient.synthesizeSpeech({
+        input: { text: aiText },
+        voice: { languageCode: "en-US", ssmlGender: "NEUTRAL" },
+        audioConfig: { audioEncoding: "MP3" },
+      });
+
+      const audioBase64 = ttsResponse.audioContent.toString("base64");
+      socket.emit("bot-response", { text: aiText, audioData: audioBase64 });
+      finalTranscript = "";
+    } catch (err) {
+      console.error("AI/TTS Error:", err);
+    }
+  });
 
 });
 
